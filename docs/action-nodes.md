@@ -127,3 +127,68 @@ Click any token chip in the Remote Path field to insert it. Tokens are resolved 
 | `{node_name}` | Label of this action node |
 
 **Example path:** `/reports/{year}/{month}/report-{date}.xlsx` → `/reports/2026/06/report-2026-06-18.xlsx`
+
+### Setting Up the Credential Type for Transfer File
+
+The Transfer File node uses a [Custom Credential](custom-credentials) to supply connection details. You must create the Credential Type once (admin only) and then create Credentials for each target server.
+
+#### SFTP Credential Type
+
+**Inputs schema:**
+
+```json
+[
+  { "id": "host",     "label": "Host",     "type": "string",  "required": true  },
+  { "id": "port",     "label": "Port",     "type": "string",  "required": false, "default": "22" },
+  { "id": "username", "label": "Username", "type": "string",  "required": true  },
+  { "id": "password", "label": "Password", "type": "secret",  "required": false },
+  { "id": "key",      "label": "SSH Private Key", "type": "secret", "required": false,
+    "help_text": "PEM-encoded private key. Leave blank to use password auth." }
+]
+```
+
+**Injectors schema:**
+
+```json
+{
+  "env": {
+    "SFTP_HOST":     "{{ host }}",
+    "SFTP_PORT":     "{{ port }}",
+    "SFTP_USERNAME": "{{ username }}",
+    "SFTP_PASSWORD": "{{ password }}",
+    "SFTP_KEY":      "{{ key }}"
+  }
+}
+```
+
+#### SMB Credential Type
+
+**Inputs schema:**
+
+```json
+[
+  { "id": "host",     "label": "Host / Server",    "type": "string", "required": true  },
+  { "id": "share",    "label": "Share Name",        "type": "string", "required": true  },
+  { "id": "username", "label": "Username",          "type": "string", "required": true  },
+  { "id": "password", "label": "Password",          "type": "secret", "required": true  },
+  { "id": "domain",   "label": "Domain (optional)", "type": "string", "required": false }
+]
+```
+
+**Injectors schema:**
+
+```json
+{
+  "env": {
+    "SMB_HOST":     "{{ host }}",
+    "SMB_SHARE":    "{{ share }}",
+    "SMB_USERNAME": "{{ username }}",
+    "SMB_PASSWORD": "{{ password }}",
+    "SMB_DOMAIN":   "{{ domain }}"
+  }
+}
+```
+
+:::info
+After creating the Credential Type under **Settings → Credential Types**, create a Credential of that type in your project under **Keys & Credentials → Credentials**. The Transfer File node's *Credential* picker lists all project credentials — select the one that matches the target server.
+:::

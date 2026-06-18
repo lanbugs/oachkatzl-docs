@@ -46,6 +46,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'workflows',
         'approval-gates',
+        'remote-approval-gate',
         'action-nodes',
         'artifact-cache',
       ],
